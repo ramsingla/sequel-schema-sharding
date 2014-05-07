@@ -1,5 +1,4 @@
 require 'singleton'
-require 'sequel-replica-failover'
 
 module Sequel
   module SchemaSharding
@@ -66,27 +65,12 @@ module Sequel
           :host => config['host'],
           :database => config['database'],
           :port => config['port'],
-          :single_threaded => true,
-          :loggers => [Sequel::SchemaSharding::LoggerProxy.new],
-          :pool_class => Sequel::ShardedSingleFailoverConnectionPool,
-          :pool_retry_count => 10,
-          :pool_stick_timeout => 30
+          :loggers => [Sequel::SchemaSharding::LoggerProxy.new]
         }
       end
 
       def replica_hash_for(config)
-        return {} if config['replicas'].nil?
-        size = config['replicas'].size
-        {
-          :servers => {
-            :read_only => ->(db) do
-              choice = rand(size)
-              probe = Sequel::SchemaSharding::DTraceProvider.provider.replica_hash_for
-              probe.fire(choice, size) if probe.enabled?
-              sequel_connection_config_for(config['replicas'][choice])
-            end
-          }
-        }
+        return {}
       end
 
       def db_config_for(name)
