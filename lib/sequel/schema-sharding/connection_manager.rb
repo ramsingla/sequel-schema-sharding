@@ -65,7 +65,7 @@ module Sequel
           :host => config['host'],
           :database => config['database'],
           :port => config['port'],
-          :loggers => [Sequel::SchemaSharding::LoggerProxy.new]
+          :loggers => config.logger
         }
       end
 
