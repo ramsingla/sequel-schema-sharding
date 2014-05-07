@@ -3,6 +3,8 @@ require 'sequel/schema-sharding/connection_manager'
 
 Sequel.extension :migration
 
+require 'sequel/schema-sharding/extensions/migrations_ext'
+
 module Sequel
   module SchemaSharding
     class DatabaseManager
